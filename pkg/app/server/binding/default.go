@@ -73,6 +73,7 @@ import (
 	exprValidator "github.com/bytedance/go-tagexpr/v2/validator"
 	"github.com/cloudwego/hertz/internal/bytesconv"
 	inDecoder "github.com/cloudwego/hertz/pkg/app/server/binding/internal/decoder"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	hJson "github.com/cloudwego/hertz/pkg/common/json"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol"
@@ -263,6 +264,10 @@ func (b *defaultBinder) bindTagWithValidate(req *protocol.Request, v interface{}
 		return err
 	}
 	if needValidate {
+		hlog.SystemLogger().Infof("DEBUG ValidateStruct: %+v", rv.Elem())
+		for i := 0; i < rv.Elem().NumField(); i++ {
+			hlog.SystemLogger().Infof("DEBUG StructTag: %+v", rv.Type().Field(i).Tag)
+		}
 		err = b.config.Validator.ValidateStruct(rv.Elem())
 	}
 	return err
